@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <title>hlxwell/mail-engine @ GitHub</title>
+
+  <style type="text/css">
+    body {
+      margin-top: 1.0em;
+      background-color: #edeee3;
+      font-family: "Helvetica,Arial,FreeSans";
+      color: #000000;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+    h1 { font-size: 3.8em; color: #12111c; margin-bottom: 3px; }
+    h1 .small { font-size: 0.4em; }
+    h1 a { text-decoration: none }
+    h2 { font-size: 1.5em; color: #12111c; }
+    h3 { text-align: center; color: #12111c; }
+    a { color: #12111c; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+    pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+  </style>
+</head>
+
+<body>
+  <a href="http://github.com/hlxwell/mail-engine"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/hlxwell/mail-engine/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/hlxwell/mail-engine/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="http://github.com/hlxwell/mail-engine">mail-engine</a>
+      <span class="small">by <a href="http://github.com/hlxwell">hlxwell</a></span></h1>
+
+    <div class="description">
+      Manage all mail templates of your system in mail engine, your client can directly manage them online for each formats and locales.
+    </div>
+
+    <p>Why Mail Engine
+
+1. Don't need to export and import your system data to any other mail systems(like mailchimp, mad_mimi).
+2. Allow user to edit all email templates directly in system admin, save the time of developer to participate in.
+3. Allow user to add mail sending schedule directly in system admin, don't need developer to add them into code or deploy crontab at server each time when client have new request.
+4. Fully take advantage of the convenience of loading any system data to mail template. In the past, like using mailchimp, you have to store everything into user list, then you are able to load that into mail template, it increased the complexity of maintaining information in another system.
+5. If you want to trace your mail, like open rate, click rate and unsubscribe rate, we provide Sendgrid integration configuration to take advantage that system. (More information at http://sendgrid.com)
+6. Allow logging all sent mails, you can check which mail been sent to which user.
+7. You can know send the email to the active users, so that you don't need to waste your credits of sendgrid or amazon.</p><h2>Dependencies</h2>
+<p>gem "activesupport", '>= 3.0.0'
+gem "httparty"
+gem "nokogiri"
+gem "deep_cloneable"
+gem "sqlite3-ruby", :require => "sqlite3"
+gem 'rack', :git => 'git://github.com/rack/rack.git'
+gem "liquid", :git => "git://github.com/hlxwell/liquid.git"
+gem 'kaminari', :git => 'https://github.com/amatsuda/kaminari.git'
+gem "carrierwave", :git => "git://github.com/jnicklas/carrierwave.git"
+</p>
+<h2>Install</h2>
+<p>Step 1:
+gem install mail_engine
+
+Step 2:
+Add management page needed javascript lib and css files, migration files and mail_engine_config.yml under config directory.
+rails g mail_engine:install
+
+Step 3:
+Run migration.
+rake db:migrate
+
+Step 4:
+Add below line to the crontab list of your sever:
+### check mail schedule for every 15 minutes ###
+*/4 * * * * sh -c "cd /path/to/your/system && rake mail_engine:sendmail RAILS_ENV=production"</p>
+<h2>Authors</h2>
+<p>Michael He (hlxwell@gmail.com)<br/><br/>      </p>
+<h2>Contact</h2>
+<p>Michael He (Rails developer) (hlxwell@gmail.com)<br/>      </p>
+
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/hlxwell/mail-engine/zipball/master">zip</a> or
+      <a href="http://github.com/hlxwell/mail-engine/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/hlxwell/mail-engine</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="http://github.com/hlxwell/mail-engine">hlxwell/mail-engine</a>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-1240424-5");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
