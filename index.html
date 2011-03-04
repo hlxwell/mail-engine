@@ -49,45 +49,61 @@
       Manage all mail templates of your system in mail engine, your client can directly manage them online for each formats and locales.
     </div>
 
-    <p>Why Mail Engine
+<p>
+<h3>Why Mail Engine</h3>
+<ol>
+  <li>Don't need to export and import your system data to any other mail systems(like mailchimp, mad_mimi).</li>
+  <li>Allow user to edit all email templates directly in system admin, save the time of developer to participate in.</li>
+  <li>Allow user to add mail sending schedule directly in system admin, don't need developer to add them into code or deploy crontab at server each time when client have new request.</li>
+  <li>Fully take advantage of the convenience of loading any system data to mail template. In the past, like using mailchimp, you have to store everything into user list, then you are able to load that into mail template, it increased the complexity of maintaining information in another system.</li>
+  <li>If you want to trace your mail, like open rate, click rate and unsubscribe rate, we provide Sendgrid integration configuration to take advantage that system. (More information at http://sendgrid.com)</li>
+  <li>Allow logging all sent mails, you can check which mail been sent to which user.</li>
+  <li>You can know send the email to the active users, so that you don't need to waste your credits of sendgrid or amazon.</li>
+</ol>
+</p>
 
-1. Don't need to export and import your system data to any other mail systems(like mailchimp, mad_mimi).
-2. Allow user to edit all email templates directly in system admin, save the time of developer to participate in.
-3. Allow user to add mail sending schedule directly in system admin, don't need developer to add them into code or deploy crontab at server each time when client have new request.
-4. Fully take advantage of the convenience of loading any system data to mail template. In the past, like using mailchimp, you have to store everything into user list, then you are able to load that into mail template, it increased the complexity of maintaining information in another system.
-5. If you want to trace your mail, like open rate, click rate and unsubscribe rate, we provide Sendgrid integration configuration to take advantage that system. (More information at http://sendgrid.com)
-6. Allow logging all sent mails, you can check which mail been sent to which user.
-7. You can know send the email to the active users, so that you don't need to waste your credits of sendgrid or amazon.</p><h2>Dependencies</h2>
-<p>gem "activesupport", '>= 3.0.0'
-gem "httparty"
-gem "nokogiri"
-gem "deep_cloneable"
-gem "sqlite3-ruby", :require => "sqlite3"
-gem 'rack', :git => 'git://github.com/rack/rack.git'
-gem "liquid", :git => "git://github.com/hlxwell/liquid.git"
-gem 'kaminari', :git => 'https://github.com/amatsuda/kaminari.git'
-gem "carrierwave", :git => "git://github.com/jnicklas/carrierwave.git"
+
+<h2>Dependencies</h2>
+<p>
+<ol>
+  <li>gem "activesupport", '>= 3.0.0'</li>
+  <li>gem "httparty"</li>
+  <li>gem "nokogiri"</li>
+  <li>gem "deep_cloneable"</li>
+  <li>gem "sqlite3-ruby", :require => "sqlite3"</li>
+  <li>gem 'rack', :git => 'git://github.com/rack/rack.git'</li>
+  <li>gem "liquid", :git => "git://github.com/hlxwell/liquid.git"</li>
+  <li>gem 'kaminari', :git => 'https://github.com/amatsuda/kaminari.git'</li>
+  <li>gem "carrierwave", :git => "git://github.com/jnicklas/carrierwave.git"</li>
+</ol>
 </p>
 <h2>Install</h2>
-<p>Step 1:
+<p>
+  
+<p>Step 1:</p>
 gem install mail_engine
 
-Step 2:
+<p>Step 2:</p>
 Add management page needed javascript lib and css files, migration files and mail_engine_config.yml under config directory.
 rails g mail_engine:install
 
-Step 3:
+<p>Step 3:</p>
 Run migration.
 rake db:migrate
 
-Step 4:
+<p>Step 4:</p>
 Add below line to the crontab list of your sever:
-### check mail schedule for every 15 minutes ###
-*/4 * * * * sh -c "cd /path/to/your/system && rake mail_engine:sendmail RAILS_ENV=production"</p>
+<p>### check mail schedule for every 15 minutes ###</p>
+<p>*/4 * * * * sh -c "cd /path/to/your/system && rake mail_engine:sendmail RAILS_ENV=production"</p>
+
+</p>
 <h2>Authors</h2>
-<p>Michael He (hlxwell@gmail.com)<br/><br/>      </p>
+<p>Michael He (hlxwell@gmail.com)
+<br/>
+<br/>      </p>
 <h2>Contact</h2>
-<p>Michael He (Rails developer) (hlxwell@gmail.com)<br/>      </p>
+<p>Michael He (Rails developer) (hlxwell@gmail.com)
+<br/>      </p>
 
 
     <h2>Download</h2>
