@@ -1,0 +1,7 @@
+app/*
+coverage.data
+coverage/*
+pkg/*
+public/*
+test/*
+
