@@ -1,0 +1,115 @@
+<!-- used for google chart -->
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+<script type="text/javascript">
+  // show today's pie chart
+  function drawPie() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Name');
+    data.addColumn('number', 'Rate');
+
+    data.addRows(<%= @pie_chart_columns.size %>);
+
+    <% @pie_chart_columns.each_with_index do |col, i| %>
+      data.setValue(<%= i %>, 0, "<%= col %>");
+      data.setValue(<%= i %>, 1, <%= @data_of_today[col] %>);
+    <% end %>
+
+    var chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+    chart.draw(data, {width: 350, height: 300, chartArea: {left:0,top:0,right:0,bottom:0, width:"100%",height:"100%"} });
+  }
+
+  var stats_data = <%= raw @stats_data.to_json %>;
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawPie);
+</script>
+
+<div class="today-report left">
+
+  <h2>Report of Today</h2>
+  <div class="clearer"></div>
+
+  <div class="left">
+    <table border="0" cellspacing="5" cellpadding="5" class="data-table" style="width: 500px; margin-top: 30px; margin-right: 30px">
+      <tr>
+        <th>Requests</th><td><%= @data_of_today["requests"] %></td>
+        <th>Delivered</th><td><%= @data_of_today["delivered"] %></td>
+      </tr>
+      <tr>
+        <th>Total Opens</th><td><%= @data_of_today["opens"] %></td>
+        <th>Unique Opens</th><td><%= @data_of_today["unique_opens"] %></td>
+      </tr>
+      <tr>
+        <th>Total Clicks</th><td><%= @data_of_today["clicks"] %></td>
+        <th>Unique Clicks</th><td><%= @data_of_today["unique_clicks"] %></td>
+      </tr>
+      <tr>
+        <th>Open Rate</th>
+        <td><%= show_percentage(@data_of_today["unique_opens"].to_f, @data_of_today["delivered"].to_f) %></td>
+        <th>Click Rate</th>
+        <td><%= show_percentage(@data_of_today["unique_clicks"].to_f, @data_of_today["delivered"].to_f) %></td>
+      </tr>
+      <tr>
+        <th>Bounces</th><td><%= @data_of_today["bounces"] %></td>
+        <th>Spams</th><td><%= @data_of_today["spamreports"] %></td>
+      </tr>
+      <tr>
+        <th>Blocks</th><td><%= @data_of_today["blocks"] %></td>
+        <th>Invalid Emails</th><td><%= @data_of_today["invalid_email"] %></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="right">
+    <div id='pie_chart'></div>
+  </div>
+</div>
+<div class="clearer"></div>
+
+<div class="today-report left" style="width: 920px;">
+  <h2>Next Scheduled Mail</h2>
+  <div class="clearer"></div>
+  <%= show_no_record(future_schedules = MailEngine::MailSchedule.future_schedules) do %>
+    <table border="0" cellspacing="5" cellpadding="5" class="data-table" style="width: 910px; margin-top: 30px; margin-right: 30px">
+      <tr>
+        <th>Schedule Name</th><th width="120">Send Time</th>
+      </tr>
+      <% future_schedules.each do |schedule, scheduled_time| %>
+      <tr>
+        <td><%= link_to schedule.name, mail_schedule_path(schedule) %></td><td><%= scheduled_time.to_s(:db) %></td>
+      </tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>
+<div class="clearer"></div>
+
+<div class="today-report left" style="width: 920px;">
+  <h2>Recently Sent Mails</h2>
+  <div class="clearer"></div>
+
+  <%= show_no_record(mail_log = MailEngine::MailLog.order("id desc").limit(10)) do %>
+    <table class="data-table" style="width: 910px; margin-top: 30px; margin-right: 30px">
+      <tr>
+        <th>Subject</th>
+        <th>Sender</th>
+        <th>Recipient</th>
+        <th>mime_type</th>
+        <th>Sent at</th>
+        <th width="20"></th>
+      </tr>
+
+    <% mail_log.each do |log| %>
+      <tr class="even">
+        <td><%= log.subject %></td>
+        <td><%= log.sender %></td>
+        <td><%= log.recipient %></td>
+        <td><%= log.mime_type %></td>
+        <td><%= log.created_at %></td>
+        <td><%= link_to image_tag('mail_engine/icons/show.png'), mail_log_path(log) %></td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
+</div>
+<div class="clearer"></div>

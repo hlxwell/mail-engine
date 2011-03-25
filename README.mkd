@@ -1,0 +1,256 @@
+Why Mail Engine
+===============
+1. Don't need to export and import your system data to any other mail systems(like mailchimp, mad_mimi).
+2. Allow user to edit all email templates directly in system admin, save the time of developer to participate in.
+3. Allow user to add mail sending schedule directly in system admin, don't need developer to add
+them into code or deploy crontab at server each time when client have new request.
+4. Fully take advantage of the convenience of loading any system data to mail template. In the past,
+like using mailchimp, you have to store everything into user list, then you are able to load that into
+mail template, it increased the complexity of maintaining information in another system.
+5. If you want to trace your mail, like open rate, click rate and unsubscribe rate, we provide Sendgrid
+integration configuration to take advantage that system. (More information at http://sendgrid.com)
+6. Allow logging all sent mails, you can check which mail been sent to which user.
+7. You can know send the email to the active users, so that you don't need to waste your credits of sendgrid or amazon.
+
+Problem when using third party mail system
+=========================================
+We are using mailchimp mostly for the newsletter solution, but it's has many problems that we have to make a new mail engine
+to fit our needs in real project:
+
+1. It is only one newsletter or marketing mail solution, so for system mail, it can do nothing, so for system mail we still go the original way (put them in the rails project.)
+2. Mailchimp don't support other encode for mail, when sending japanese or chinese mail it will be failed.
+3. It doesn't support localization, so different language is different campaign, you need to set a lot config for each of them.
+4. Manage user list is awkward, it even can't create list by API, so you have to create list one by one by hand.
+5. It can't load other user personal or customized data from system into mail, like latest unchecked news or messages, it's very limited to load info from user list record.
+6. It doesn't support reusable partials, which like you hope to put a fixed content of footer or header.
+7. It doesn't support recurring mail sending.
+
+Serveral places you need developer's help without Mail Engine:
+
+1. Change text in system email.
+2. Localize mail templates in system.
+3. Prepare user list for marketing mail if you want to use mailchimp.
+4. Analyse system mail send log.
+5. Add multipart for email, like text version email or html version email.
+6. Find untranslated mail templates.
+
+Installation
+============
+** Step 1: **
+
+    gem install mail_engine
+
+** Step 2: **
+
+Add management page needed javascript lib and css files, migration files and mail_engine_config.yml under config directory.
+
+    rails g mail_engine:install
+
+** Step 3: **
+
+Run migration.
+
+    rake db:migrate
+
+** Step 4: **
+
+Add acts_as_mail_receiver definition to "Your User" model.
+
+    class User < AR
+      acts_as_mail_receiver :payload_columns => %w{firstname lastname},
+                            :groups => %w{all english_users chinese_users}
+    end
+
+  1. User model must have 'email' and payload specified columns, or else you can delegate to other model.
+  2. "acts_as_mail_receiver" statement has to place below the scope statements.
+
+** Step 5: **
+
+Add sendgrid smtp api configure:
+
+    class UserMailer < ActionMailer::Base
+      sendgrid_header do
+        category "xxx"
+
+        filters {
+          opentrack "enable" => 1
+          clicktrack "enable" => 1
+          subscriptiontrack "enable" => 0
+          template "enable" => 0
+          footer "enable" => 0
+        }
+      end
+    end
+
+For the detail information please check sendgrid.com.
+
+** Step 6: **
+
+Add below line to production.rb or development.rb for specifing the host.
+it will used when generate resource url when upload zip file.
+
+    config.action_mailer.default_url_options = { :host => "lvh.me:3000" }
+
+** Step 7: **
+
+Add below line to the crontab list of your sever:
+
+    ### check mail schedule for every 15 minutes ###
+    */4 * * * * sh -c "cd /path/to/your/system && rake mail_engine:sendmail RAILS_ENV=production"
+
+Configuration
+=============
+
+Below is the config for development env.
+
+    development:
+      log_mail: false                                 # if you want to enable the mail log, set true.
+      user_class_name: "User"                         # Specify the User model in your system, which will used for mail schedule feature to find user groups and payloads.
+      user_locale_column: "locale"                    # Specify the locale column of user table, this will help sending correct language of mail to user.
+      mount_at: "/admin/mail_engine"                  # set the url path for mail engine.
+      access_check_method: "logged_in?"               # set a method name which will execute before each page action in mail engine.
+      intercept_email: "dev@youdomain.com"          # if you want to send all mail to one email, like on staging server or development environment, you can set this, or else don't set it.
+      sendgrid:                                       # Below you need to set the sendgrid account info.
+        sendgrid_user: "you send grid username"       #
+        sendgrid_key: "password"                      #
+        sendgrid_category: "my sendgrid category"     #
+
+
+Usage
+=====
+** For System Mail: **
+
+Due to the sender of system mail is ActionMailer, so you just need to set template physical store path (e.g. user_mailer/notify)
+as the mailer template load path, system will load it from database. (Notice, database template will
+override your file template.)
+
+Mail Engine use Liquid template engine, so you can read the Liquid Reference at http://www.liquidmarkup.org/
+
+Steps:
+
+1. Create a template in mail engine.
+
+** For Marketing Mail: **
+
+For normal marketing mails are quite simple in logic, so don't need logic code in the mail template.
+So we provide a mail dispatcher which allows user can send marketing mail only by providing the template and
+select the data pre-defined in system to the mail template, don't need developer to do anything like adding mailer file.
+
+Steps:
+
+1. Create a mail tempate in mail engine.
+2. Create a sending schedule record. (You can specify the users to receive this mail, total sending count,
+sending period, when start to deliver the first mail and load which data into this template, You also can set
+condition for the scheduler, like if no specified data in collection, don't send the mail.)
+
+You also can send mail in your program by using:
+MailEngine::MailDispatcher.{your marketing mail template name}(:to => "Michael he <hlxwell@gmail.com>", :values => {:username => "Michael He"}).deliver
+
+Notes
+=====
+Currently only support above rails3.
+
+Tips
+====
+1. Use below rake task, you can export local mail engine data, then import to production environment.
+
+    rake mail_engine:export_mail_engine_database
+
+2. You can setup postfix or sendmail MTA on the server then use it to queue the mail locally.
+
+    http://support.sendgrid.com/entries/142079-getting-started-configuring-postfix
+
+then you can set delivery_method as:
+
+    config.action_mailer.delivery_method = :sendmail
+    
+
+Sendgrid Whitelabel Wizard
+==========================
+
+  http://wiki.sendgrid.com/doku.php?id=whitelabel
+
+  http://support.sendgrid.com/forums/142139-faq-whitelabel-and-dns
+
+Screenshots
+===========
+
+Dashboard
+---------
+Shows the latest report.
+
+![Dashboard](https://github.com/hlxwell/mail-engine/raw/master/screenshots/dashboard.png "Dashboard")
+
+
+Template Management
+-------------------
+You can manage the template used in your system, including:
+
+1. System mail, has it's own action mailer file.
+2. Marketing mail, simple logic and without it's own action mailer.
+3. Partials, you can reused it in any other templates.
+
+![Template Management](https://github.com/hlxwell/mail-engine/raw/master/screenshots/templates.png "Template Management")
+
+
+Template editing Page
+---------------------
+You can see here are many details you can change:
+
+1. Template Path, system action mailer can find it when lookup mail template.
+2. Locale
+3. Format
+4. Layout
+5. Files will used in the template.
+6. Zip File when you used at creating this template.
+7. Preview template in time.
+
+![Template editing Preview](https://github.com/hlxwell/mail-engine/raw/master/screenshots/editing_mail_template.png "Template editing Preview")
+
+
+Upload html template with image in a zip file
+---------------------------------------------
+You can create a template by uplaoding a zip file including one html and other images or css files.
+
+![Upload html template with image in a zip file.")](https://github.com/hlxwell/mail-engine/raw/master/screenshots/new_by_upload.png "Upload html template with image in a zip file.")
+
+
+Partial and Layout selection
+----------------------------
+![Partial and Layout selection](https://github.com/hlxwell/mail-engine/raw/master/screenshots/select_layout_partial.png "Partial and Layout selection")
+
+
+Mail Schedule
+-------------
+You can set a mail sending schedule, here are some useful setting items:
+
+1. Marketing Mail Template.
+2. User Group will be received this mail.
+3. Total send count.
+4. Already send count.
+5. Sending Period.
+6. Payloads which load from user model and send to template when sending.
+7. First send date time, this date will indicate when this mail will be send first time, and according to the seding period it will resend at the same time after one period.
+8. You can control if run the schedule or not.
+9. Users with different locale setting will receive different language of email. (if not found that language, you can set default template or not send.)
+
+![Mail Schedule](https://github.com/hlxwell/mail-engine/raw/master/screenshots/schedule.png "Mail Schedule")
+
+
+Mail Logs
+---------
+It will log all mails' content been sent, you can turn it off in config file.
+
+![Mail Logs](https://github.com/hlxwell/mail-engine/raw/master/screenshots/logs.png "Mail Logs")
+
+
+Report
+------
+Shows detail chart and data list of mail sending stats.
+
+![Report](https://github.com/hlxwell/mail-engine/raw/master/screenshots/reports.png "Report")
+
+
+Bounce Report
+-------------
+![Bounce Report](https://github.com/hlxwell/mail-engine/raw/master/screenshots/bounce_report.png "Bounce Report")

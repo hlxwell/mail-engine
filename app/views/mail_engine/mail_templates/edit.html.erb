@@ -1,0 +1,16 @@
+<div class="post">
+  <div class="post-title">
+    <h2>Editing Mail Template</h2>
+  </div>
+  <div class="post-body">
+    <%= form_for(@mail_template, :url => mail_template_path(@mail_template)) do |f| %>
+      <%= render 'form', :f => f %>
+    <% end %>
+  </div>
+  <br />
+  <h2>
+    <%= link_to 'Back', mail_templates_path(:type => @mail_template.type) %>
+    |
+    <%= link_to 'Show', mail_template_path(@mail_template) %>
+  </h2>
+</div>

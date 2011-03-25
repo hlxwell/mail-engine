@@ -1,0 +1,102 @@
+<!-- used for google chart -->
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+<script type="text/javascript">
+  // show historical line chart
+  function drawLine() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Date');
+    <% @stat_columns.each do |col| %>
+      data.addColumn('number', "<%= col %>");
+    <% end %>
+
+    data.addRows(stats_data.length);
+
+    <% @stats_data.each_with_index do |stat, i| %>
+      data.setValue(<%= i %>, 0, "<%= stat["date"] %>");
+      <% @stat_columns.each_with_index do |col, j| %>
+        data.setValue(<%= i %>, <%= j + 1 %>, <%= stat[col] %>);
+      <% end %>
+    <% end %>
+
+    var chart = new google.visualization.LineChart(document.getElementById('line_chart'));
+    chart.draw(data, {width: 960, height: 300, title: 'History Reports', chartArea: {left:0,top:0,width:"80%",height:"90%"} });
+  }
+
+  // load google chart package.
+  var stats_data = <%= raw @stats_data.to_json %>;
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawLine);
+
+  $(function(){
+    // add date picker
+    var dates = $("#report_from, #report_to").datepicker({
+			defaultDate: "0",
+			changeMonth: false,
+			numberOfMonths: 1,
+			dateFormat: "yy-mm-dd",
+			onSelect: function(selectedDate) {
+				var option = this.id == "report_from" ? "minDate" : "maxDate",
+					instance = $(this).data("datepicker"),
+					date = $.datepicker.parseDate(
+						instance.settings.dateFormat ||	$.datepicker._defaults.dateFormat,
+						selectedDate,
+						instance.settings
+					);
+				dates.not(this).datepicker("option", option, date);
+			}
+		});
+  });
+</script>
+
+<div class="historical-report left" style="margin-top: 10px">
+  <h2 class="left">History Report</h2>
+  <!-- data range select -->
+
+  <div class="right" style="margin-right: 40px; margin-bottom: 50px">
+    <%= form_for :report, reports_path, :html => {:method => :get} do |f| %>
+      <%= f.label :from %>
+      <%= f.text_field :from, :class => "text", :value => params[:report].try(:[], :from) || 1.weeks.ago.to_date.to_s(:db) %>
+
+      <%= f.label :to %>
+      <%= f.text_field :to, :class => "text", :value => params[:report].try(:[], :to) || Time.now.to_date.to_s(:db) %>
+      &nbsp; <input type="submit" class="refresh_report_list button" value="Submit">
+    <% end %>
+  </div>
+  <div class="clearer"></div>
+
+  <div id='line_chart'></div>
+  <div class="history" style="margin-top: 50px;">
+    <table border="0" cellspacing="5" cellpadding="5" class="data-table" style="width: 910px;">
+      <tr>
+        <th>Date</th>
+        <th>Requests</th>
+        <th>Delivered</th>
+        <th>Opens <br> (unique/total)</th>
+        <th>Open Rate</th>
+        <th>Clicks <br> (unique/total)</th>
+        <th>Click Rate</th>
+        <th>Bounces</th>
+        <th>Spams</th>
+        <th>Blocks</th>
+        <th>Invalid <br> Emails</th>
+      </tr>
+      <% @stats_data.each do |stat| %>
+      <tr>
+        <td><%= stat["date"] %></td>
+        <td><%= stat["requests"] %></td>
+        <td><%= stat["delivered"] %></td>
+        <td><%= stat["unique_opens"] %> / <%= stat["opens"] %></td>
+        <td><%= show_percentage(stat["unique_opens"].to_f, stat["delivered"].to_f) %></td>
+        <td><%= stat["unique_clicks"] %> / <%= stat["clicks"] %></td>
+        <td><%= show_percentage(stat["unique_clicks"].to_f, stat["delivered"].to_f) %></td>
+        <td><%= stat["bounces"] %></td>
+        <td><%= stat["spamreports"] %></td>
+        <td><%= stat["blocks"] %></td>
+        <td><%= stat["invalid_email"] %></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+<div class="clearer"></div>

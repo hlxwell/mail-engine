@@ -1,0 +1,50 @@
+<div class="field">
+  <%= f.label :layout, "Layout" %>
+  <div class="clearer"></div>
+
+  <!-- list all kinds of layouts -->
+  <% MailEngine::PLACEHOLDERS_IN_LAYOUT.keys.each do |layout_name| %>
+    <div class="layout_option_item left">
+      <%= f.radio_button :layout, layout_name, :class => "layout_option hidden", :ref => layout_name %>
+
+      <label for="mail_engine_mail_template_layout_<%= layout_name %>" style="font-size: 11px">
+        <img class="layout_option_image" src="/images/mail_engine/unselect_<%= layout_name %>_layout.png"/>
+      </label>
+    </div>
+  <% end %>
+  <div class="clearer"></div>
+
+  <% MailEngine::PLACEHOLDERS_IN_LAYOUT.keys.each do |layout_name| %>
+    <!-- list all placeholders -->
+    <div class="placeholder_list <%= layout_name %> quiet" style="margin-left: 7px"></div>
+  <% end %>
+
+  <div class="hint">Choose a template layout.</div>
+</div>
+
+<script>
+  $(function(){
+    function resetAllImageSelectionState() {
+      $("img.layout_option_image").each(function(i){
+        if(!$.string(this.src).include('unselect')) {
+          $(this).attr("src", $.string(this.src).gsub("images/mail_engine/", "images/mail_engine/unselect_").str);
+        }
+      });
+    }
+
+    $("input[type=radio].layout_option").click(function(){
+      // change image to selected state.
+      resetAllImageSelectionState();
+      var image_el = $(this).next("label").children('img');
+      var selected_layout_image_name = $.string(image_el.attr('src')).gsub("unselect_", "").str
+      image_el.attr('src', selected_layout_image_name);
+
+      var layout_name = $(this).attr('ref');
+      $('.placeholder_list').html("");
+      $("." + layout_name).load("<%= partial_options_mail_templates_path %>", {id:<%= f.object.id||"''" %>, layout:layout_name, template_format:$('#mail_engine_mail_template_format').val(), template_locale:$('#mail_engine_mail_template_locale').val()});
+    });
+
+    // load options when editing.
+    $("input[type=radio].layout_option:checked").click();
+  });
+</script>

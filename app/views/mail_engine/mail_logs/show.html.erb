@@ -1,0 +1,38 @@
+<div class="post">
+  <div class="post-title">
+    <h2>Subject: <%= @mail_log.subject %></h2>
+  </div>
+
+  <div class="post-body">
+    <table class="data-table largest">
+      <tr>
+        <td>recipient</td>
+        <td><%= @mail_log.recipient %></td>
+      </tr>
+      <tr>
+        <td>sender</td>
+        <td><%= @mail_log.sender %></td>
+      </tr>
+      <tr>
+        <td>Mime type</td>
+        <td><%= @mail_log.mime_type %></td>
+      </tr>
+      <tr>
+        <td>Mail template path</td>
+        <td><pre><%= @mail_log.mail_template_path %></pre></td>
+      </tr>
+      <tr>
+        <td>Raw Body</td>
+        <td><pre><%= @mail_log.raw_body %></pre></td>
+      </tr>
+      <tr>
+        <td>Sent at</td>
+        <td><%= @mail_log.created_at %></td>
+      </tr>
+    </table>
+  </div>
+  <br />
+  <h2>
+  <%= link_to 'Back', mail_logs_path %>
+  </h2>
+</div>

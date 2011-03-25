@@ -1,0 +1,69 @@
+<div class="post">
+  <div class="post-title">
+    <h2>
+      Create New <%= mail_template_list_title(params[:type]) %>
+    </h2>
+  </div>
+  <div class="post-body">
+    <%= form_for(@mail_template, :url => create_by_upload_mail_templates_path, :html => {:multipart => true}) do |f| %>
+      <% if @mail_template.errors.any? %>
+        <p id="error_explanation">
+          <h2><%= pluralize(@mail_template.errors.count, "error") %> prohibited this mail_template from being saved:</h2>
+
+          <ul>
+          <% @mail_template.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </p>
+      <% end %>
+
+      <div class="field">
+        <%= f.label :name %><br />
+        <%= f.text_field :name, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :subject %><br />
+        <%= f.text_field :subject, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :path, 'Template Path' %><br />
+        <%= f.text_field :path, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :locale %><br />
+        <%= f.select :locale, I18n.available_locales.map(&:to_s) %>
+      </div>
+
+      <div class="field">
+        <label>Zip File</label><br />
+        <% if @mail_template.zip_file.present? %>
+          <div class="loud">Do you to change this uploaded file: <b><%= link_to File.basename(@mail_template.zip_file_url), @mail_template.zip_file_url %></b> ?</div>
+        <% end %>
+
+        <%= f.file_field :zip_file, :style => 'padding: 10px;', :class => "text" %>
+        <%= f.hidden_field :zip_file_cache %>
+
+        <h5>Note:</h5>
+        <ol>
+          <li>Only include Image files(png, gif, jpg), css files and html file.</li>
+          <li>Only one html file.</li>
+          <li>File should less than 1MB.</li>
+        </ol>
+      </div>
+
+      <%= f.hidden_field :for_marketing, :value => (f.object.for_marketing || params[:type] == 'marketing') %>
+      <%= f.hidden_field :partial, :value => (f.object.partial || params[:type] == 'partial') %>
+      <%= f.hidden_field :format %>
+      <%= f.hidden_field :layout %>
+      <%= f.hidden_field :create_by_upload, :value => true %>
+
+      <div class="actions">
+        <%= f.submit :class => "button" %>
+      </div>
+    <% end %>
+  </div>
+</div>

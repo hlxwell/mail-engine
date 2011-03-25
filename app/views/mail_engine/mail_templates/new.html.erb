@@ -1,0 +1,12 @@
+<div class="post">
+  <div class="post-title">
+    <h2>
+      Create New <%= mail_template_list_title(params[:type]) %>
+    </h2>
+  </div>
+  <div class="post-body">
+    <%= form_for(@mail_template, :url => mail_templates_path) do |f| %>
+      <%= render 'form', :f => f %>
+    <% end %>
+  </div>
+</div>

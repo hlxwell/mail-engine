@@ -1,0 +1,86 @@
+<div class="post">
+	<div class="post-title"><h2><%= mail_template_list_title(params[:type]) %></h2></div>
+	<div class="post-body">
+    <%= show_no_record(@mail_templates) do %>
+		<table class="data-table">
+      <tr>
+        <th>Template Info</th>
+        <th>Variations
+          <a href="javascript:void()" class="show_all_variations_link">All</a>
+        </th>
+      </tr>
+
+    <% @mail_templates.each do |mail_template| %>
+      <tr class="even">
+        <td style="vertical-align:top">
+          <table class="data-table" style="margin-bottom: 0px">
+            <tr><th width="100">Name</th><td><%= mail_template.name %></td></tr>
+            <tr><th>Path</th><td><%= mail_template.path %></td></tr>
+          <% if params[:type] != 'partial' %>
+            <tr><th>Subject</th><td><%= mail_template.subject %></td></tr>
+            <tr><th>Layout</th><td><%= mail_template.layout %></td></tr>
+            <tr><th>Partials</th><td><%= mail_template.partials.map(&:name).join(" , ") %></td></tr>
+          <% end %>
+          </table>
+        </td>
+        <td style="width: 200px; vertical-align: top;">
+          <!-- variation list -->
+          <table style="margin-bottom: 0px;">
+            <% mail_template.variations(params[:type] == 'partial').group_by(&:locale).each do |locale, templates| %>
+              <tr class="<%= "hideable" unless templates.detect {|t| t.persisted? } %>">
+                <td colspan="2" style="background-color: grey; font-weight: bold; color: white; padding: 2px 5px"><%= locale.humanize %></td>
+              </tr>
+
+              <% templates.each do |template| %>
+                <% if template.persisted? %>
+                <tr>
+                  <td><b><%= template.locale %>.<%= template.format %></b></td>
+                  <td>
+                    <%= link_to image_tag('mail_engine/icons/show.png', :alt => "Show"), mail_template_path(template) %>
+                    <%= link_to image_tag('mail_engine/icons/edit.gif', :alt => "Edit"), edit_mail_template_path(template) %>
+                    <%= link_to image_tag('mail_engine/icons/delete.png', :alt => "Delete"), mail_template_path(template, :type => params[:type]), :confirm => 'Are you sure?', :method => :delete %>
+                    <%= link_to image_tag('mail_engine/icons/copy.png', :alt => "Copy"), duplicate_mail_template_path(template, :type => params[:type]), :class => "fancybox iframe" %>
+                  </td>
+                </tr>
+                <% else %>
+                <tr>
+                  <td class='quiet hideable' colspan='2'>
+                    <%= image_tag('mail_engine/icons/missing.png', :alt => "Missing", :class=>"left", :style => "margin-bottom: 0px") %>
+                    Missing: <%= template.locale %>.<%= template.format %>
+                  </td>
+                </tr>
+                <% end %>
+              <% end %>
+            <% end %>
+          </table>
+
+        </td>
+      </tr>
+    <% end %>
+    </table>
+
+    <div class="left">
+      <%= paginate @mail_templates %>
+    </div>
+    <% end %>
+
+    <h5 class="quiet right">
+      Create new mail By:
+      <%= link_to 'Input html or text', new_mail_template_path(:type => params[:type]) %>
+       or
+      <%= link_to "Uploading zip file", new_by_upload_mail_templates_path(:type => params[:type]) %>
+    </h5>
+    <div class="clearer">&nbsp;</div>
+	</div>
+</div>
+
+<script>
+  $(function(){
+    $(".hideable").hide();
+
+    $(".show_all_variations_link").click(function(){
+      $(".hideable").toggle();
+      $(this).html($(this).html() == 'All' ? "Available" : "All")
+    });
+  });
+</script>

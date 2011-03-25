@@ -1,0 +1,28 @@
+<% @tmp_mail_template.template_partials.each do |template_partial| %>
+  <%= fields_for "mail_engine_mail_template[template_partials_attributes][#{template_partial.id || template_partial.object_id}]", template_partial do |partial_form| %>
+    <b>Choose partial for <%= partial_form.object.placeholder_name %>:</b>
+
+    <!-- list all partials -->
+    <%= show_no_record partials = MailEngine::MailTemplate.partial.where(:format => params[:template_format], :locale => params[:template_locale]) do %>
+      <ul class="partial_option_list">
+      <% partials.each do |partial| %>
+        <li>
+          <%= partial_form.radio_button :partial_id, partial.id, :class => "placeholder_option" %>
+          <label for="mail_engine_mail_template_template_partials_attributes_<%= template_partial.id || template_partial.object_id %>_partial_id_<%= partial.id %>" style="font-size: 13px">
+            <%= partial.name.to_s.humanize %>
+            <%= link_to "Edit", edit_mail_template_path(partial), :target => "_blank" %>
+            <iframe width="100%" class="bordered" src="<%= body_mail_template_path(partial, :format => partial.format, :locale => partial.locale) %>"></iframe>
+          </label>
+          <%= partial_form.hidden_field :placeholder_name, :value => partial_form.object.placeholder_name %>
+        </li>
+      <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+<% end %>
+
+<script>
+  $(function(){
+    jQuery('iframe').iframeAutoHeight({heightOffset: 20});
+  });
+</script>

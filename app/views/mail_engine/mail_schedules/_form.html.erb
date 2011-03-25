@@ -1,0 +1,59 @@
+<% if @mail_schedule.errors.any? %>
+  <p id="error_explanation">
+    <h2><%= pluralize(@mail_schedule.errors.count, "error") %> prohibited this mail_schedule from being saved:</h2>
+
+    <ul>
+    <% @mail_schedule.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </p>
+<% end %>
+
+<div class="field">
+  <%= f.label :name %><br />
+  <%= f.text_field :name, :class => "text" %>
+</div>
+<div class="field">
+  <%= f.label :mail_template_id %><br />
+  <%= f.select :mail_template_id, MailEngine::MailTemplate.group("path").where(:for_marketing => true).map {|t| [t.name, t.id]} %>
+</div>
+<div class="field">
+  <%= f.label :user_group %><br />
+  <%= f.select :user_group, MailEngine::USER_MODEL.groups %>
+</div>
+<div class="field">
+  <%= f.label :count %><br />
+  <%= f.select :count, [['Unlimited', 0]] + (1..10).to_a.map {|i| [i,i]} %>
+</div>
+<div class="field">
+  <%= f.label :period %><br />
+  <%= f.select :period, ['once', 'daily', 'weekly', 'monthly', 'yearly'] %>
+</div>
+<div class="field">
+  <%= f.label :first_send_at, "First Send At" %><br />
+  <%= f.datetime_select :first_send_at, :start_year => Time.now.year, :include_seconds => false, :minute_step => 15 %>
+</div>
+<div class="field">
+  <%= f.label :available, "Available?" %><br />
+  <%= f.check_box :available %>
+  <div class="hint">If you don't want to execute this schedule, leave it unchecked.</div>
+</div>
+<div class="field">
+  <%= f.label :default_locale, "Default Locale" %><br />
+  <%= f.select :default_locale, I18n.available_locales, :include_blank => true %>
+  <div class="hint">
+    When can find mail template for user's locale, system will send default locale template to user.
+    If you leave this blank, system won't send mail to this kind of users.
+  </div>
+</div>
+<div class="field">
+  <%= f.label :payload %><br />
+  <% MailEngine::USER_MODEL.payload_columns.each do |column| %>
+    <%= check_box_tag "#{f.object_name}[payload][]", column, f.object.payload.try(:include?, column) %> <%= column %><br />
+  <% end %>
+</div>
+
+<div class="actions">
+  <%= f.submit :class => "button" %>
+</div>

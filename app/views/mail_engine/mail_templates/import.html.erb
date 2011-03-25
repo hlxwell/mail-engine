@@ -1,0 +1,41 @@
+<div class="post">
+  <div class="post-title">
+    <h2>
+      Import Mail Template From System Files
+    </h2>
+  </div>
+  <div class="post-body">
+    <%= form_for(:import, :url => import_from_files_mail_templates_path) do |f| %>
+      <!-- basic columns -->
+      <div class="field">
+        <%= f.label :mailer_name %><br />
+        <%= f.text_field :mailer_name, :class => "text" %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit :class => "button" %>
+      </div>
+
+      <% if @mailers_found_on_system = MailEngine::MailTemplate.all_system_mailers %>
+      <div class="field quiet" style="margin-top: 20px">
+        <label>Mailers Found on current system under "app/mailers":</label>
+        <ul>
+          <% @mailers_found_on_system.each do |mailer| %>
+          <li><%= mailer %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+
+      <div class="field quiet" style="margin-top: 20px">
+        <label>Your mail template file name have to abide the convention like:</label>
+        <ul>
+          <li>xxx.html.erb</li>
+          <li>xxx.text.erb</li>
+          <li>xxx.html.liquid</li>
+          <li>xxx.text.liquid</li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>

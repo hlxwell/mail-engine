@@ -1,0 +1,29 @@
+<p>
+  <h4>Latest 10 Logs</h4>
+  <%= show_no_record(logs) do %>
+		<table class="data-table">
+      <tr>
+        <th>Subject</th>
+        <th>Sender</th>
+        <th>Recipient</th>
+        <th>mime_type</th>
+        <th>Sent at</th>
+        <th></th>
+      </tr>
+
+    <% logs.each do |log| %>
+      <tr class="even">
+        <td><%= log.subject %></td>
+        <td><%= log.sender %></td>
+        <td><%= log.recipient %></td>
+        <td><%= log.mime_type %></td>
+        <td><%= log.created_at %></td>
+        <td>
+          <%= link_to 'Show', mail_log_path(log) %>
+          <%= link_to 'Destroy', mail_log_path(log), :confirm => 'Are you sure?', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
+</p>

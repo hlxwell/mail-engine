@@ -1,0 +1,34 @@
+<div class="post">
+	<div class="post-title"><h2>Mail Logs</h2></div>
+	<div class="post-body">
+	  <%= show_no_record(@mail_logs) do %>
+			<table class="data-table">
+        <tr>
+          <th>Subject</th>
+          <th>Sender</th>
+          <th>Recipient</th>
+          <th>mime_type</th>
+          <th>Sent at</th>
+          <th width="50"></th>
+        </tr>
+
+      <% @mail_logs.each do |log| %>
+        <tr class="even">
+          <td><%= log.subject %></td>
+          <td><%= log.sender %></td>
+          <td><%= log.recipient %></td>
+          <td><%= log.mime_type %></td>
+          <td><%= log.created_at %></td>
+          <td>
+            <%= link_to image_tag('mail_engine/icons/show.png'), mail_log_path(log) %>
+            <%= link_to image_tag('mail_engine/icons/delete.png'), mail_log_path(log), :confirm => 'Are you sure?', :method => :delete %>
+          </td>
+        </tr>
+      <% end %>
+      </table>
+      <%= paginate @mail_logs %>
+    <% end %>
+
+    <div class="clearer">&nbsp;</div>
+	</div>
+</div>

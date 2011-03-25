@@ -1,0 +1,58 @@
+<div class="post">
+  <div class="post-title">
+    <h2>Name: <%= @mail_schedule.name %></h2>
+  </div>
+
+  <div class="post-body">
+    <table class="data-table largest">
+      <tr>
+        <td>Name</td>
+        <td><%= @mail_schedule.name %></td>
+      </tr>
+      <tr>
+        <td>Template</td>
+        <td><%= @mail_schedule.mail_template.name %></td>
+      </tr>
+      <tr>
+        <td>User Group</td>
+        <td><%= @mail_schedule.user_group %></td>
+      </tr>
+      <tr>
+        <td>Total Count</td>
+        <td><%= @mail_schedule.count %></td>
+      </tr>
+      <tr>
+        <td>Sent Count</td>
+        <td><%= @mail_schedule.sent_count %></td>
+      </tr>
+      <tr>
+        <td>Period</td>
+        <td><%= @mail_schedule.period %></td>
+      </tr>
+      <tr>
+        <td>First send at</td>
+        <td><%= @mail_schedule.first_send_at %></td>
+      </tr>
+      <tr>
+        <td>Last send at</td>
+        <td><%= @mail_schedule.last_sent_at %></td>
+      </tr>
+      <tr>
+        <td>Default Locale</td>
+        <td><%= @mail_schedule.default_locale %></td>
+      </tr>
+      <tr>
+        <td>Payload</td>
+        <td><%= @mail_schedule.payload %></td>
+      </tr>
+    </table>
+
+    <%= render "mail_engine/mail_logs/related_logs", :logs => @mail_schedule.logs %>
+  </div>
+  <br />
+  <h2>
+  <%= link_to 'Edit', edit_mail_schedule_path(@mail_schedule) %>
+  |
+  <%= link_to 'Back', mail_schedules_path %>
+  </h2>
+</div>

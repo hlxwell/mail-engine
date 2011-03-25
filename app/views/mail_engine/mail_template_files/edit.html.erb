@@ -1,0 +1,11 @@
+<div class="post">
+  <div class="post-body">
+    <h1>Editing File</h1>
+    <hr />
+    <%= form_for [@mail_template, @mail_template_file],
+                 :url => mail_template_mail_template_file_path(@mail_template, @mail_template_file),
+                 :html => {:multipart => true} do |f| %>
+      <%= render 'form', :f => f %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="post">
+  <div class="post-body">
+    <h1>Duplicate Mail Tempate</h1>
+    <hr />
+
+    <%= form_for(@mail_template, :url => duplicate_mail_template_path(@mail_template, :type => params[:type])) do |f| %>
+      <% if @duplicated_mail_template.errors.any? %>
+        <p id="error_explanation">
+          <h2><%= pluralize(@duplicated_mail_template.errors.count, "error") %> prohibited this mail_template from being saved:</h2>
+
+          <ul>
+          <% @duplicated_mail_template.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </p>
+      <% end %>
+
+      <div class="field">
+        <%= f.label :name %><br />
+        <%= f.text_field :name, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :subject %><br />
+        <%= f.text_field :subject, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :path, 'Template Path' %><br />
+        <%= f.text_field :path, :class => "text" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :locale %><br />
+        <%= f.select :locale, I18n.available_locales.map(&:to_s) %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit "Duplicate", :class => "button" %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

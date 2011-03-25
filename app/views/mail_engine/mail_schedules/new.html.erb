@@ -1,0 +1,13 @@
+<div class="post">
+  <div class="post-title">
+    <h2>
+      <%= link_to 'Back', mail_schedules_path %>
+      New Mail Schedules
+    </h2>
+  </div>
+  <div class="post-body">
+    <%= form_for(@mail_schedule, :url => mail_schedules_path) do |f| %>
+      <%= render 'form', :f => f %>
+    <% end %>
+  </div>
+</div>

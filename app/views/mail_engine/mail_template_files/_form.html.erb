@@ -1,0 +1,38 @@
+<% if f.object.errors.any? %>
+  <p id="error_explanation">
+    <h4><%= pluralize(f.object.errors.count, "error") %> prohibited this mail_schedule from being saved:</h4>
+    <ul>
+    <% f.object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </p>
+<% end %>
+
+
+<div class="field">
+  <%= f.label :file %><br />
+  <%= f.file_field :file, :class => "text" %>
+  <div>
+    <i>Only allowed to upload Image file(.jpg, .jpeg, .gif, .png) and CSS file(.css).</i>
+  </div>
+</div>
+
+<% if f.object.attributes["file"] %>
+<table class="data-table" style="margin-top: 10px; margin-bottom: 0px">
+  <tr>
+    <td><h3><%= link_to f.object.attributes["file"], f.object.file.url, :target => '_blank' %></h3></td>
+  </tr>
+  <% if f.object.image? %>
+  <tr>
+    <td><%= image_tag f.object.file.url, :width => 200 %></td>
+  </tr>
+  <% end %>
+</table>
+
+<% end %>
+
+<div class="clearer"></div>
+<div class="actions right">
+  <%= f.submit :class => "button" %>
+</div>

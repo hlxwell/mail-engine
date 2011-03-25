@@ -1,0 +1,17 @@
+<h1><%= params[:type].titleize %></h1>
+
+<%= show_no_record(@result) do %>
+  <table class="data-table">
+    <tr>
+      <th>Email</th>
+      <th width="120">Created At</th>
+    </tr>
+
+  <% @result.each do |record| %>
+    <tr class="even">
+      <td><%= record["email"] %></td>
+      <td><%= record["created"] %></td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

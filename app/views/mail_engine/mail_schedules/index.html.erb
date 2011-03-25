@@ -1,0 +1,83 @@
+<div class="post">
+	<div class="post-title"><h2>System Mail Schedules</h2></div>
+	<div class="post-body">
+	  <%= show_no_record(@mail_schedules) do %>
+		<table class="data-table">
+      <tr>
+        <th>Schedule Info</th>
+        <th width="230"></th>
+      </tr>
+
+    <% @mail_schedules.each do |mail_schedule| %>
+      <tr class="even">
+        <td style="vertical-align:top">
+          <table class="data-table" style="margin-bottom: 0px">
+            <tr><th width="100">Name</th><td><%= mail_schedule.name %></td></tr>
+            <tr><th>Template</th><td><%= mail_schedule.mail_template.name %></td></tr>
+            <tr><th>User Group</th><td><%= mail_schedule.user_group %></td></tr>
+            <tr><th>Total Count</th><td><%= mail_schedule.count %></td></tr>
+            <tr><th>Sent Count</th><td><%= mail_schedule.sent_count %></td></tr>
+            <tr><th>Period</th><td><%= mail_schedule.period %></td></tr>
+            <tr><th>First Send At</th><td><%= mail_schedule.first_send_at %></td></tr>
+            <tr><th>Last Sent At</th><td><%= mail_schedule.last_sent_at %></td></tr>
+            <tr><th>Payload</th>
+              <td><%= raw mail_schedule.payload.gsub(",", "<br/>") %></td>
+            </tr>
+            <tr><th>Availability</th><td class="availability_state_of_<%= mail_schedule.id %> loud large"><%= mail_schedule.available? ? "Running" : "Stopped" %></td></tr>
+          </table>
+        </td>
+        <td style="vertical-align:top">
+          <%= link_to image_tag('mail_engine/icons/show.png'), mail_schedule_path(mail_schedule) %>
+          <%= link_to image_tag('mail_engine/icons/edit.gif'), edit_mail_schedule_path(mail_schedule) %>
+          <%= link_to image_tag('mail_engine/icons/delete.png'), mail_schedule_path(mail_schedule), :confirm => 'Are you sure?', :method => :delete %>
+          <%= link_to image_tag('mail_engine/icons/start.png'), start_mail_schedule_path(mail_schedule), :confirm => 'Are you sure to start this schedule?', :class => "start_button_#{mail_schedule.id}", :remote => true, :method => :post %>
+          <%= link_to image_tag('mail_engine/icons/pause.png'), stop_mail_schedule_path(mail_schedule), :confirm => 'Are you sure to stop this schedule?', :class => "stop_button_#{mail_schedule.id}", :remote => true, :method => :post %>
+          <script>
+            $(function(){
+              if(<%= mail_schedule.available? %>) {
+                showStopScheduleButton("<%= mail_schedule.id %>");
+              } else {
+                showStartScheduleButton("<%= mail_schedule.id %>");
+              }
+            });
+          </script>
+          <br>
+          <%= form_tag send_test_mail_mail_schedule_path(mail_schedule), :remote => true do %>
+            <div>
+              <span>Load data from user</span>: <%= select_tag :sample_user_id, options_from_collection_for_select(MailEngine::USER_MODEL.order('id asc').limit(10).send(mail_schedule.user_group), "id", "email") %>
+            </div>
+            <div>
+              <span>Send mail to</span>: <%= text_field_tag :recipient, "", :size => 14, :class => "text" %>
+              <%= submit_tag 'Send Test', :class => "button" %>
+            </div>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+
+    <div class="left">
+      <%= paginate @mail_schedules %>
+    </div>
+    <% end %>
+
+    <h5 class="right">
+      <%= link_to 'New Mail Schedule', new_mail_schedule_path %>
+    </h5>
+    <div class="clearer">&nbsp;</div>
+	</div>
+</div>
+
+<script>
+  function showStartScheduleButton(id) {
+    $(".start_button_" + id).show();
+    $(".stop_button_" + id).hide();
+    $(".availability_state_of_" + id).html("Stopped");
+  }
+
+  function showStopScheduleButton(id) {
+    $(".start_button_" + id).hide();
+    $(".stop_button_" + id).show();
+    $(".availability_state_of_" + id).html("Running");
+  }
+</script>

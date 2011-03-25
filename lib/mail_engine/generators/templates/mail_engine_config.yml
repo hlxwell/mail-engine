@@ -1,0 +1,37 @@
+development:
+  log_mail: false
+  user_class_name: "User"
+  user_locale_column: "locale"
+  mount_at: "/admin/mail_engine"
+  access_check_method: "logged_in?"
+  default_from: "your@email.address"
+  intercept_email: "dev@youdomain.com"
+  sendgrid:
+    sendgrid_user: "you send grid username"
+    sendgrid_key: "password"
+    sendgrid_category: "my sendgrid category"
+
+test:
+  log_mail: false
+  user_class_name: "User"
+  user_locale_column: "locale"
+  mount_at: "/admin/mail_engine"
+  access_check_method: "logged_in?"
+  intercept_email: "dev@youdomain.com"
+  default_from: "your@email.address"
+  sendgrid:
+    sendgrid_user: "you send grid username"
+    sendgrid_key: "password"
+    sendgrid_category: "my sendgrid category"
+
+production:
+  log_mail: false
+  user_class_name: "User"
+  user_locale_column: "locale"
+  mount_at: "/admin/mail_engine"
+  access_check_method: "logged_in?"
+  default_from: "your@email.address"
+  sendgrid:
+    sendgrid_user: "you send grid username"
+    sendgrid_key: "password"
+    sendgrid_category: "my sendgrid category"

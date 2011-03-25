@@ -1,0 +1,150 @@
+<%
+  is_current_template_for_marketing = f.object.for_marketing || params[:type] == 'marketing'
+  is_current_template_partial = f.object.partial || params[:type] == 'partial'
+%>
+
+<% if @mail_template.errors.any? %>
+  <p id="error_explanation">
+    <h2><%= pluralize(@mail_template.errors.count, "error") %> prohibited this mail_template from being saved:</h2>
+    <ul>
+    <% @mail_template.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </p>
+<% end %>
+
+<!-- basic columns -->
+<div class="field">
+  <%= f.label :name %><br />
+  <%= f.text_field :name, :class => "text" %>
+</div>
+
+<div class="field">
+  <%= f.label :path, 'Template Path' %><br />
+  <%= f.text_field :path, :class => "text" %>
+</div>
+
+<% unless is_current_template_partial %>
+<div class="field">
+  <%= f.label :subject %><br />
+  <%= f.text_field :subject, :class => "text" %>
+
+  <div class="hint">
+  <span class='found_subject_hint hidden'>We found you have entered this subject in another template with same locale and path.</span>
+  <span class='found_same_path_template_hint <%= 'hidden' unless f.object.persisted? %>'>If you edit this subject here, the subject of current template with same locale will be changed.</span>
+  </div>
+</div>
+<% end %>
+
+<div class="field">
+  <%= f.label :locale %><br />
+  <%= f.select :locale, I18n.available_locales.map(&:to_s) %>
+</div>
+
+<div class="field">
+  <%= f.label :format, "Format" %><br />
+  <%= f.select :format, ['text', 'html'] %>
+</div>
+
+<!-- layout selecter -->
+<%= render 'layout_selector', :f => f if params[:type] != 'partial' and f.object.partial != true %>
+
+<!-- template files -->
+<% if @mail_template.persisted? %>
+<div class="field">
+  <label>Files</label>
+
+  <% if @mail_template.mail_template_files.present? %>
+    <% @mail_template.mail_template_files.each do |file| %>
+      <p>
+        <div style="margin-bottom: 5px">
+          <b><%= link_to file.attributes["file"], file.url %></b>
+          <!-- operation links -->
+          <b><%= link_to "[edit]", edit_mail_template_mail_template_file_path(@mail_template, file), :class => "fancybox iframe", :title => "Editing #{file.attributes["file"]}" %></b>
+          <b><%= link_to "[delete]", mail_template_mail_template_file_path(@mail_template, file), :method => :delete, :confirm => 'Are you sure?', :remote => true %></b>
+          <br />
+          <!-- url preview input box -->
+          <input type="text" class="text click_to_select" style="width:910px" value="<%= "http://#{request.host}#{file.url}" %>" />
+        </div>
+        <%= image_tag file.url if file.image? %>
+      </p>
+      <hr />
+    <% end %>
+  <% end %>
+  <div class="clearer"></div>
+
+  <h3 class="right"><%= link_to "New File", new_mail_template_mail_template_file_path(@mail_template), :class => "fancybox iframe", :title => "Upload A New File" %></h3>
+  <div class="clearer"></div>
+</div>
+<% end %>
+
+<!-- template zip file which uploaded when create from zip file -->
+<% if @mail_template.zip_file.present? %>
+<div class="field">
+  <label>ZIP Files</label>
+  <h4><%= link_to @mail_template.attributes["zip_file"], @mail_template.zip_file.url %></h4>
+  <div class="hint">If you want to do batch editing, we recommend you to download the original file then edit it on your local computer.</div>
+</div>
+<% end %>
+
+<!-- html or text editor -->
+<div class="field">
+  <%= f.label :body %><br />
+  <%= f.text_area :body, :class => "markitup w910", :rows => "10" %>
+</div>
+
+<%= f.hidden_field :for_marketing, :value => is_current_template_for_marketing %>
+<%= f.hidden_field :partial, :value => is_current_template_partial %>
+
+<div class="actions">
+  <%= f.submit :class => "button" %>
+</div>
+
+<script>
+  function get_subject() {
+    options = {
+      path : $("#mail_engine_mail_template_path").val(),
+      for_marketing : <%= is_current_template_for_marketing %>,
+      locale : $("#mail_engine_mail_template_locale").val()
+    };
+
+    $.get("<%= get_existed_subject_mail_templates_path %>", options, function(data){
+      if(data.length > 0) {
+        $("#mail_engine_mail_template_subject").val(data);
+        $(".found_subject_hint, .found_same_path_template_hint").fadeIn('slow');
+      } else {
+        $(".found_subject_hint, .found_same_path_template_hint").fadeOut('slow');
+      }
+    });
+  }
+
+  $(function(){
+    // if path, locale changed should check if subject's existance.
+    $("#mail_engine_mail_template_path, #mail_engine_mail_template_locale").change(function(){
+      get_subject();
+    });
+
+    $("#mail_engine_mail_template_subject").change(function(){
+      if($(this).val().length == 0) {
+        $(".found_subject_hint, .found_same_path_template_hint").fadeOut('slow');
+      }
+    });
+
+    $(".click_to_select").click(function(){ $(this).select(); });
+
+    // when the format chenged, should reload the same format of partial options.
+    $("#mail_engine_mail_template_format, #mail_engine_mail_template_locale").change(function(){
+      $(".layout_option:checked").click();
+    });
+
+    // init markitup
+    // FIXME: when format changed the preview.{format} can't change.
+    $.extend(mySettings, {
+      previewParserPath: '~/preview.' + $("#mail_engine_mail_template_format").val(),
+      previewParserVar: 'new_body',
+      previewAutoRefresh: true
+    });
+    $(".markitup").markItUp(mySettings);
+  });
+</script>

@@ -1,0 +1,54 @@
+<div class="post">
+  <div class="post-title">
+    <h2><%= @mail_template.name %></h2>
+  </div>
+  <div class="post-body">
+    <table class="data-table largest">
+      <tr>
+        <td>Full Path</td>
+        <td>
+          <%= @mail_template.full_path %>
+        </td>
+      </tr>
+      <tr>
+        <td>Locale</td>
+        <td>
+          <%= @mail_template.locale %>
+        </td>
+      </tr>
+      <tr>
+        <td>Format</td>
+        <td>
+          <%= @mail_template.format %>
+        </td>
+      </tr>
+      <% unless @mail_template.partial? %>
+      <tr>
+        <td>Subject</td>
+        <td>
+          <%= @mail_template.subject %>
+        </td>
+      </tr>
+      <tr>
+        <td>Layout</td>
+        <td>
+          <%= image_tag "/images/mail_engine/#{@mail_template.layout}_layout.png" %>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+
+    <p>
+      <h4>Preview</h4>
+      <iframe width="100%" class="bordered" src="<%= body_mail_template_path(@mail_template, :format => @mail_template.format) %>"></iframe>
+    </p>
+
+    <%= render "mail_engine/mail_logs/related_logs", :logs => @mail_template.logs %>
+  </div>
+  <br />
+  <h2>
+  <%= link_to 'Edit', edit_mail_template_path(@mail_template) %>
+  |
+  <%= link_to 'Back', mail_templates_path(:type => @mail_template.type) %>
+  </h2>
+</div>
