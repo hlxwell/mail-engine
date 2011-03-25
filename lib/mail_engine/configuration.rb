@@ -15,16 +15,16 @@ module MailEngine
       ### Need check below config options
       #
       # log_mail: true
-      # user_class_name: "User"
-      # user_locale_column: "locale"
-      # mount_at: "/admin/mail_engine"
-      # intercept_email: "hlxwell@gmail.com"
-      # default_from: "hlxwell@gmail.com"
-      # access_check_method: "logged_in?"
+      # user_class_name: 'User'
+      # user_locale_column: 'locale'
+      # mount_at: '/admin/mail_engine'
+      # intercept_email: 'your email'
+      # default_from: 'you email'
+      # access_check_method: 'logged_in?'
       # sendgrid:
-      #   sendgrid_user: "a@theplant.jp"
-      #   sendgrid_key: "plant^o^"
-      #   sendgrid_category: "development"
+      #   sendgrid_user: 'you send grid user'
+      #   sendgrid_key: 'you send grid password'
+      #   sendgrid_category: 'your send grid category'
       #
       def config_check
         if MailEngine::Base.current_config.blank?
@@ -51,13 +51,13 @@ module MailEngine
   user_class_name: 'User'
   user_locale_column: 'locale'
   mount_at: '/admin/mail_engine'
-  intercept_email: 'hlxwell@gmail.com'
-  default_from: 'hlxwell@gmail.com'
+  intercept_email: 'your email'
+  default_from: 'you email'
   access_check_method: 'logged_in?'
   sendgrid:
-    sendgrid_user: 'a@theplant.jp'
-    sendgrid_key: 'plant^o^'
-    sendgrid_category: 'development'
+    sendgrid_user: 'you send grid user'
+    sendgrid_key: 'you send grid password'
+    sendgrid_category: 'your send grid category'
 ===============================================
         NOTE
 
