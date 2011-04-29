@@ -60,8 +60,6 @@ module MailEngine
     sendgrid_category: 'your send grid category'
 ===============================================
         NOTE
-
-        raise e
       end
 
     end

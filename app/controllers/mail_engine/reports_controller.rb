@@ -22,6 +22,7 @@ class MailEngine::ReportsController < MailEngine::ApplicationController
                   else
                     MailEngine::Sendgrid::RestApi.stats(:days => 7)
                   end
+    @stats_data ||= {}
   end
 
   def chart

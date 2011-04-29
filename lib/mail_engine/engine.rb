@@ -44,7 +44,9 @@ module MailEngine
       # load config
       MailEngine::Configuration.load_and_check
 
-      MailEngine::USER_MODEL = MailEngine::Base.current_config["user_class_name"].constantize unless defined?(MailEngine::USER_MODEL)
+      if MailEngine::Base.current_config.present? and !defined?(MailEngine::USER_MODEL)
+        MailEngine::USER_MODEL = MailEngine::Base.current_config["user_class_name"].constantize
+      end
     end
   end
 end
