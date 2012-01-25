@@ -12,7 +12,7 @@
 
     <% @pie_chart_columns.each_with_index do |col, i| %>
       data.setValue(<%= i %>, 0, "<%= col %>");
-      data.setValue(<%= i %>, 1, <%= @data_of_today[col] %>);
+      data.setValue(<%= i %>, 1, <%= @data_of_today[col]||0 %>);
     <% end %>
 
     var chart = new google.visualization.PieChart(document.getElementById('pie_chart'));

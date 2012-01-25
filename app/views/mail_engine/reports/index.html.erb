@@ -15,7 +15,7 @@
     <% @stats_data.each_with_index do |stat, i| %>
       data.setValue(<%= i %>, 0, "<%= stat["date"] %>");
       <% @stat_columns.each_with_index do |col, j| %>
-        data.setValue(<%= i %>, <%= j + 1 %>, <%= stat[col] %>);
+        data.setValue(<%= i %>, <%= j + 1 %>, <%= stat[col]||0 %>);
       <% end %>
     <% end %>
 
