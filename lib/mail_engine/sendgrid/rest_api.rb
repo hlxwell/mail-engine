@@ -10,6 +10,7 @@ module MailEngine
       include HTTParty
       base_uri "https://sendgrid.com/api"
       default_params :api_key => MailEngine::Base.current_config["sendgrid"]["sendgrid_key"], :api_user => MailEngine::Base.current_config["sendgrid"]["sendgrid_user"]
+      format :xml
 
       class << self
         # <stats>
