@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mail_engine}
-  s.version = "0.1.14"
+  s.version = "0.1.15"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["michael he"]
-  s.date = %q{2011-03-25}
+  s.date = %q{2012-01-25}
   s.description = %q{Rails system mail management solution.}
   s.email = %q{hlxwell@gmail.com}
   s.extra_rdoc_files = [
@@ -576,51 +576,8 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/hlxwell/mail-engine}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.1}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Mail Management Solution}
-  s.test_files = [
-    "test/dummy/app/controllers/application_controller.rb",
-    "test/dummy/app/helpers/application_helper.rb",
-    "test/dummy/app/mailers/test/test_mailer.rb",
-    "test/dummy/app/mailers/user_mailer.rb",
-    "test/dummy/app/models/user.rb",
-    "test/dummy/config/application.rb",
-    "test/dummy/config/boot.rb",
-    "test/dummy/config/environment.rb",
-    "test/dummy/config/environments/development.rb",
-    "test/dummy/config/environments/production.rb",
-    "test/dummy/config/environments/test.rb",
-    "test/dummy/config/initializers/backtrace_silencers.rb",
-    "test/dummy/config/initializers/inflections.rb",
-    "test/dummy/config/initializers/mime_types.rb",
-    "test/dummy/config/initializers/secret_token.rb",
-    "test/dummy/config/initializers/session_store.rb",
-    "test/dummy/config/routes.rb",
-    "test/dummy/db/migrate/20110114030841_create_table_mail_template.rb",
-    "test/dummy/db/migrate/20110125094530_create_users.rb",
-    "test/dummy/db/migrate/20110126030525_create_mail_schedules.rb",
-    "test/dummy/db/migrate/20110204114145_create_template_partials.rb",
-    "test/dummy/db/migrate/20110206025002_create_mail_logs.rb",
-    "test/dummy/db/migrate/20110217062316_create_mail_template_files.rb",
-    "test/dummy/db/schema.rb",
-    "test/factories.rb",
-    "test/functional/mail_engine/dashboard_controller_test.rb",
-    "test/functional/mail_engine/mail_dispatcher_test.rb",
-    "test/functional/mail_engine/mail_logs_controller_test.rb",
-    "test/functional/mail_engine/mail_schedules_controller_test.rb",
-    "test/functional/mail_engine/mail_template_files_controller_test.rb",
-    "test/functional/mail_engine/mail_templates_controller_test.rb",
-    "test/functional/mail_engine/reports_controller_test.rb",
-    "test/functional/user_mailer_test.rb",
-    "test/support/integration_case.rb",
-    "test/test_helper.rb",
-    "test/unit/mail_engine/mail_log_test.rb",
-    "test/unit/mail_engine/mail_schedule_test.rb",
-    "test/unit/mail_engine/mail_template_file_test.rb",
-    "test/unit/mail_engine/mail_template_test.rb",
-    "test/unit/mail_engine/template_partial_test.rb",
-    "test/unit/user_test.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
